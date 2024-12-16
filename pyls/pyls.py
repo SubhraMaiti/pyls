@@ -9,6 +9,7 @@ from .file_system_error import FileSystemError
 from .file_system_processor import FileSystemProcessor
 from .file_system_formatter import NameFormatter, DetailedFormatter
 from .file_system_filter import HiddenItemsFilter
+from .file_system_sorter import ReverseSorter
 
 class PyLSCommandLineInterface:
     """Handles command-line argument parsing and application logic"""
@@ -41,13 +42,20 @@ class PyLSCommandLineInterface:
                 HiddenItemsFilter(parsed_args.all_files)
             ]
 
+            # Create sorters
+            sorters = []
+            if parsed_args.reverse:
+                sorters.append(ReverseSorter())
+
+
             # Determine formatter
             formatter = DetailedFormatter() if parsed_args.long_format else NameFormatter()
 
             # Create and run processor
             # Create and run processor
             processor = FileSystemProcessor(
-                filters=filters, 
+                filters=filters,
+                sorters=sorters, 
                 formatter=formatter
             )
             output = processor.process(items)
@@ -73,6 +81,7 @@ class PyLSCommandLineInterface:
         parser = argparse.ArgumentParser(add_help=False)
         parser.add_argument('-A', dest='all_files', action='store_true', help='Show all items')
         parser.add_argument('-l', dest='long_format', action='store_true', help='Long format')
+        parser.add_argument('-r', dest='reverse', action='store_true', help='Reverse order')
         parser.add_argument('--help', action='store_true', help='Show help message')
         return parser
     
@@ -83,11 +92,13 @@ class PyLSCommandLineInterface:
 Options:
   -A          Show all files, folders including hidden items
   -l          Use long listing format
+  -r          Reverse order while sorting
 
 Examples:
   python -m pyls                  # List files in current directory
   python -m pyls -A               # List all files and folder in current directory including hidden
   python -m pyls -l               # Long format listing
+  python -m pyls -l -r            # Reverse order
 """
         print(help_text)
 
