@@ -7,7 +7,7 @@ from typing import Optional, List
 from .file_system_loader import FileSystemLoader
 from .file_system_error import FileSystemError
 from .file_system_processor import FileSystemProcessor
-from .file_system_formatter import NameFormatter, DetailedFormatter
+from .file_system_formatter import NameFormatter, DetailedFormatter, HumanReadableSizeFormatter
 from .file_system_filter import HiddenItemsFilter, TypeFilter
 from .file_system_sorter import ReverseSorter, TimeSorter
 from .file_system_navigator import FileSystemNavigator
@@ -59,6 +59,8 @@ class PyLSCommandLineInterface:
 
             # Determine formatter
             formatter = DetailedFormatter() if parsed_args.long_format else NameFormatter()
+            if parsed_args.human_readable and parsed_args.long_format:
+                formatter = HumanReadableSizeFormatter(formatter)
 
             # Create and run processor
             # Create and run processor
@@ -92,9 +94,10 @@ class PyLSCommandLineInterface:
         parser.add_argument('-l', dest='long_format', action='store_true', help='Long format')
         parser.add_argument('-r', dest='reverse', action='store_true', help='Reverse order')
         parser.add_argument('-t', dest='time_sort', action='store_true', help='Sort by time')
+        parser.add_argument('-h', dest='human_readable', action='store_true', help='Human readable sizes')
         parser.add_argument('--filter', choices=['file', 'dir'], help='Filter by type')
-        parser.add_argument('path', nargs='?', default=None)
         parser.add_argument('--help', action='store_true', help='Show help message')
+        parser.add_argument('path', nargs='?', default=None)
         return parser
     
     def _show_help(self):
@@ -106,6 +109,8 @@ Options:
   -l          Use long listing format
   -r          Reverse order while sorting
   -t          Sort by time modified
+  -h          Show human-readable file sizes
+  --help      Show this help message
   --filter=   Filter items by type: 'file' or 'dir'
 
 Examples:
@@ -118,6 +123,7 @@ Examples:
   python -m pyls -l --filter=file # Show only files
   python -m pyls -l --filter=dir  # Show only directories
   python -m pyls -l PATH          # Show all files and directories of PATH if PATH exists
+  python -m pyls -h               # Show humain readable file size
 """
         print(help_text)
 
