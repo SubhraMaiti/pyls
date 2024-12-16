@@ -6,7 +6,7 @@ import tempfile
 import os
 
 from pyls.file_system_loader import FileSystemLoader
-from pyls.file_system_formatter import NameFormatter, DetailedFormatter
+from pyls.file_system_formatter import NameFormatter, DetailedFormatter, HumanReadableSizeFormatter
 from pyls.file_system_filter import HiddenItemsFilter, TypeFilter
 from pyls.file_system_sorter import ReverseSorter, TimeSorter
 from pyls.file_system_navigator import FileSystemNavigator
@@ -343,3 +343,23 @@ def test_navigate_path(temp_json_file):
                         '-rw-r--r-- 1622 Nov 17 12:05 parser.go',
                         'drwxr-xr-x  533 Nov 14 16:03 go.mod'
                     ]
+    
+def test_humain_readable_size(temp_json_file):
+    """Test filesystem navigator"""
+    root = FileSystemLoader.load_from_json(temp_json_file)
+    root = FileSystemNavigator.navigate(root, "parser")
+    items = root.contents
+
+    #filter hidden items
+    hidden_filter = HiddenItemsFilter(show_hidden=False)
+    filtered_items = hidden_filter.filter(items)
+    
+    # Test name formatter
+    name_formatter = DetailedFormatter()
+    name_formatter = HumanReadableSizeFormatter(name_formatter)
+    names = name_formatter.format(filtered_items)
+    assert names == [
+                        'drwxr-xr-x 1.3K Nov 17 12:51 parser_test.go', 
+                        '-rw-r--r-- 1.6K Nov 17 12:05 parser.go', 
+                        'drwxr-xr-x  533 Nov 14 16:03 go.mod'
+                    ] 
