@@ -9,6 +9,7 @@ from pyls.file_system_loader import FileSystemLoader
 from pyls.file_system_formatter import NameFormatter, DetailedFormatter
 from pyls.file_system_filter import HiddenItemsFilter, TypeFilter
 from pyls.file_system_sorter import ReverseSorter, TimeSorter
+from pyls.file_system_navigator import FileSystemNavigator
 
 @pytest.fixture
 def sample_filesystem_json() -> Dict[str, Any]:
@@ -186,7 +187,7 @@ def test_filesystem_filters(temp_json_file):
     assert not any(item.name.startswith('.') for item in filtered_items)
 
 def test_filesystem_show_all_items(temp_json_file):
-    """Test filesystem filtering"""
+    """Test show hidden items"""
     root = FileSystemLoader.load_from_json(temp_json_file)
     items = root.contents
 
@@ -198,7 +199,7 @@ def test_filesystem_show_all_items(temp_json_file):
     assert names == ['.gitignore', 'LICENSE', 'README.md', 'ast', 'go.mod', 'lexer', 'main.go', 'parser', 'token']
 
 def test_detailed_formatters(temp_json_file):
-    """Test filesystem formatters"""
+    """Test detailed formatters"""
     root = FileSystemLoader.load_from_json(temp_json_file)
     items = root.contents
 
@@ -221,7 +222,7 @@ def test_detailed_formatters(temp_json_file):
                     ]
     
 def test_reverse_sorter(temp_json_file):
-    """Test filesystem formatters"""
+    """Test sort by reverse order"""
     root = FileSystemLoader.load_from_json(temp_json_file)
     items = root.contents
 
@@ -248,7 +249,7 @@ def test_reverse_sorter(temp_json_file):
                     ]
     
 def test_time_sorter(temp_json_file):
-    """Test filesystem formatters"""
+    """Test sort by time"""
     root = FileSystemLoader.load_from_json(temp_json_file)
     items = root.contents
 
@@ -275,7 +276,7 @@ def test_time_sorter(temp_json_file):
                     ]
     
 def test_dir_filter(temp_json_file):
-    """Test filesystem formatters"""
+    """Test directory filter"""
     root = FileSystemLoader.load_from_json(temp_json_file)
     items = root.contents
 
@@ -300,7 +301,7 @@ def test_dir_filter(temp_json_file):
                     ]
 
 def test_file_filter(temp_json_file):
-    """Test filesystem formatters"""
+    """Test file filter"""
     root = FileSystemLoader.load_from_json(temp_json_file)
     items = root.contents
 
@@ -322,4 +323,23 @@ def test_file_filter(temp_json_file):
                         'drwxr-xr-x   83 Nov 14 11:27 README.md',
                         'drwxr-xr-x   60 Nov 14 13:51 go.mod',
                         '-rw-r--r--   74 Nov 14 13:57 main.go'
+                    ]
+    
+def test_navigate_path(temp_json_file):
+    """Test filesystem navigator"""
+    root = FileSystemLoader.load_from_json(temp_json_file)
+    root = FileSystemNavigator.navigate(root, "parser")
+    items = root.contents
+
+    #filter hidden items
+    hidden_filter = HiddenItemsFilter(show_hidden=False)
+    filtered_items = hidden_filter.filter(items)
+    
+    # Test name formatter
+    name_formatter = DetailedFormatter()
+    names = name_formatter.format(filtered_items)
+    assert names == [
+                        'drwxr-xr-x 1342 Nov 17 12:51 parser_test.go',
+                        '-rw-r--r-- 1622 Nov 17 12:05 parser.go',
+                        'drwxr-xr-x  533 Nov 14 16:03 go.mod'
                     ]
