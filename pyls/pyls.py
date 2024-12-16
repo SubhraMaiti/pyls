@@ -8,7 +8,7 @@ from .file_system_loader import FileSystemLoader
 from .file_system_error import FileSystemError
 from .file_system_processor import FileSystemProcessor
 from .file_system_formatter import NameFormatter, DetailedFormatter
-from .file_system_filter import HiddenItemsFilter
+from .file_system_filter import HiddenItemsFilter, TypeFilter
 from .file_system_sorter import ReverseSorter, TimeSorter
 
 class PyLSCommandLineInterface:
@@ -41,6 +41,9 @@ class PyLSCommandLineInterface:
             filters = [
                 HiddenItemsFilter(parsed_args.all_files)
             ]
+            if parsed_args.filter:
+                filters.append(TypeFilter(parsed_args.filter))
+
 
             # Create sorters
             sorters = []
@@ -48,7 +51,6 @@ class PyLSCommandLineInterface:
                 sorters.append(TimeSorter())
             if parsed_args.reverse:
                 sorters.append(ReverseSorter())
-
 
             # Determine formatter
             formatter = DetailedFormatter() if parsed_args.long_format else NameFormatter()
@@ -85,6 +87,7 @@ class PyLSCommandLineInterface:
         parser.add_argument('-l', dest='long_format', action='store_true', help='Long format')
         parser.add_argument('-r', dest='reverse', action='store_true', help='Reverse order')
         parser.add_argument('-t', dest='time_sort', action='store_true', help='Sort by time')
+        parser.add_argument('--filter', choices=['file', 'dir'], help='Filter by type')
         parser.add_argument('--help', action='store_true', help='Show help message')
         return parser
     
@@ -97,6 +100,7 @@ Options:
   -l          Use long listing format
   -r          Reverse order while sorting
   -t          Sort by time modified
+  --filter=   Filter items by type: 'file' or 'dir'
 
 Examples:
   python -m pyls                  # List files in current directory
@@ -105,6 +109,8 @@ Examples:
   python -m pyls -l -r            # Reverse order
   python -m pyls -l -t            # Sort by time
   python -m pyls -l -t -r         # Sort by time in revrese order
+  python -m pyls -l --filter=file # Show only files
+  python -m pyls -l --filter=dir # Show only directories
 """
         print(help_text)
 
