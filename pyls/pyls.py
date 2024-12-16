@@ -8,6 +8,7 @@ from .file_system_loader import FileSystemLoader
 from .file_system_error import FileSystemError
 from .file_system_processor import FileSystemProcessor
 from .file_system_formatter import NameFormatter
+from .file_system_filter import HiddenItemsFilter
 
 class PyLSCommandLineInterface:
     """Handles command-line argument parsing and application logic"""
@@ -35,11 +36,20 @@ class PyLSCommandLineInterface:
             # Prepare items to process
             items = root.contents if hasattr(root, 'contents') else [root]
 
+            # Create filters
+            filters = [
+                HiddenItemsFilter()
+            ]
+
             # Determine formatter
             formatter = NameFormatter()
 
             # Create and run processor
-            processor = FileSystemProcessor()
+            # Create and run processor
+            processor = FileSystemProcessor(
+                filters=filters, 
+                formatter=formatter
+            )
             output = processor.process(items)
 
             # Print output
