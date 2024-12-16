@@ -6,7 +6,7 @@ import tempfile
 import os
 
 from pyls.file_system_loader import FileSystemLoader
-from pyls.file_system_formatter import NameFormatter
+from pyls.file_system_formatter import NameFormatter, DetailedFormatter
 from pyls.file_system_filter import HiddenItemsFilter
 
 @pytest.fixture
@@ -195,3 +195,26 @@ def test_filesystem_show_all_items(temp_json_file):
     name_formatter = NameFormatter()
     names = name_formatter.format(filtered_items)
     assert names == ['.gitignore', 'LICENSE', 'README.md', 'ast', 'go.mod', 'lexer', 'main.go', 'parser', 'token']
+
+def test_detailed_formatters(temp_json_file):
+    """Test filesystem formatters"""
+    root = FileSystemLoader.load_from_json(temp_json_file)
+    items = root.contents
+
+    #filter hidden items
+    hidden_filter = HiddenItemsFilter(show_hidden=False)
+    filtered_items = hidden_filter.filter(items)
+    
+    # Test name formatter
+    name_formatter = DetailedFormatter()
+    names = name_formatter.format(filtered_items)
+    assert names == [
+                        'drwxr-xr-x 1071 Nov 14 11:27 LICENSE',
+                        'drwxr-xr-x   83 Nov 14 11:27 README.md',
+                        '-rw-r--r-- 4096 Nov 14 15:58 ast',
+                        'drwxr-xr-x   60 Nov 14 13:51 go.mod',
+                        'drwxr-xr-x 4096 Nov 14 15:21 lexer',
+                        '-rw-r--r--   74 Nov 14 13:57 main.go',
+                        'drwxr-xr-x 4096 Nov 17 12:51 parser',
+                        '-rw-r--r-- 4096 Nov 14 14:57 token'
+                    ]
