@@ -11,7 +11,7 @@ pyls is a Python implementation of the Linux `ls` command, capable of listing fi
 - Reverse order sorting with `-r`
 - Sort by modification time with `-t`
 - Human-readable file sizes with `-h`
-- Filter by file or directory type `--filter={file, dir}
+- Filter by file or directory type `--filter={file, dir}`
 
 ## Usage
 ```bash
