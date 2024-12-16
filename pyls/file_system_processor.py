@@ -1,6 +1,6 @@
 from typing import List, Optional
-from .FileSystem import FileSystemItem
-from .FileSystemFormatter import FileSystemFormatter, NameFormatter
+from .file_system import FileSystemItem
+from .file_system_formatter import FileSystemFormatter, NameFormatter
 
 class FileSystemProcessor:
     """Orchestrates the processing of filesystem items"""

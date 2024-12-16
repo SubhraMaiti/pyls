@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from .FileSystem import FileSystemItem
+from .file_system import FileSystemItem
         
 class FileSystemFormatter(ABC):
     """Abstract base class for formatting filesystem items"""

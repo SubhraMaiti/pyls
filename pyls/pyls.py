@@ -4,10 +4,10 @@ import sys
 
 from typing import Optional, List
 
-from .FileSystemLoader import FileSystemLoader
-from .FileSystemError import FileSystemError
-from .FileSystemProcessor import FileSystemProcessor
-from .FileSystemFormatter import NameFormatter
+from .file_system_loader import FileSystemLoader
+from .file_system_error import FileSystemError
+from .file_system_processor import FileSystemProcessor
+from .file_system_formatter import NameFormatter
 
 class PyLSCommandLineInterface:
     """Handles command-line argument parsing and application logic"""

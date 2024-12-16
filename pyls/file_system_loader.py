@@ -1,8 +1,8 @@
 from pathlib import Path
 import json
 from typing import Union, Dict, Any
-from .FileSystem import File, Directory
-from .FileSystemError import FileSystemError
+from .file_system import File, Directory
+from .file_system_error import FileSystemError
 
 class FileSystemLoader:
     """Responsible for loading filesystem from JSON"""
