@@ -7,6 +7,7 @@ pyls is a Python implementation of the Linux `ls` command, capable of listing fi
 ## Features
 - List files and directories
 - Show hidden files with `-A`
+- Long format listing with `-l`
 
 ## Usage
 ```bash
@@ -15,6 +16,9 @@ python -m pyls
 
 # Show all files
 python -m pyls -A
+
+# Long format listing
+python -m pyls -l
 
 # Show help
 python -m pyls --help
