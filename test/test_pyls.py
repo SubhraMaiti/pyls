@@ -7,6 +7,7 @@ import os
 
 from pyls.file_system_loader import FileSystemLoader
 from pyls.file_system_formatter import NameFormatter
+from pyls.file_system_filter import HiddenItemsFilter
 
 @pytest.fixture
 def sample_filesystem_json() -> Dict[str, Any]:
@@ -172,3 +173,13 @@ def test_filesystem_formatters(temp_json_file):
     name_formatter = NameFormatter()
     names = name_formatter.format(items)
     assert names == ['.gitignore', 'LICENSE', 'README.md', 'ast', 'go.mod', 'lexer', 'main.go', 'parser', 'token']
+
+def test_filesystem_filters(temp_json_file):
+    """Test filesystem filtering"""
+    root = FileSystemLoader.load_from_json(temp_json_file)
+    items = root.contents
+
+    # Test hidden items filter
+    hidden_filter = HiddenItemsFilter(show_hidden=False)
+    filtered_items = hidden_filter.filter(items)
+    assert not any(item.name.startswith('.') for item in filtered_items)
