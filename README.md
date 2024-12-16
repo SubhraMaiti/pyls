@@ -13,6 +13,11 @@ pyls is a Python implementation of the Linux `ls` command, capable of listing fi
 - Human-readable file sizes with `-h`
 - Filter by file or directory type `--filter={file, dir}`
 
+## Installation
+```bash
+pip install .
+```
+
 ## Usage
 ```bash
 # Basic usage
