@@ -9,7 +9,7 @@ from .file_system_error import FileSystemError
 from .file_system_processor import FileSystemProcessor
 from .file_system_formatter import NameFormatter, DetailedFormatter
 from .file_system_filter import HiddenItemsFilter
-from .file_system_sorter import ReverseSorter
+from .file_system_sorter import ReverseSorter, TimeSorter
 
 class PyLSCommandLineInterface:
     """Handles command-line argument parsing and application logic"""
@@ -44,6 +44,8 @@ class PyLSCommandLineInterface:
 
             # Create sorters
             sorters = []
+            if parsed_args.time_sort:
+                sorters.append(TimeSorter())
             if parsed_args.reverse:
                 sorters.append(ReverseSorter())
 
@@ -82,6 +84,7 @@ class PyLSCommandLineInterface:
         parser.add_argument('-A', dest='all_files', action='store_true', help='Show all items')
         parser.add_argument('-l', dest='long_format', action='store_true', help='Long format')
         parser.add_argument('-r', dest='reverse', action='store_true', help='Reverse order')
+        parser.add_argument('-t', dest='time_sort', action='store_true', help='Sort by time')
         parser.add_argument('--help', action='store_true', help='Show help message')
         return parser
     
@@ -93,12 +96,15 @@ Options:
   -A          Show all files, folders including hidden items
   -l          Use long listing format
   -r          Reverse order while sorting
+  -t          Sort by time modified
 
 Examples:
   python -m pyls                  # List files in current directory
   python -m pyls -A               # List all files and folder in current directory including hidden
   python -m pyls -l               # Long format listing
   python -m pyls -l -r            # Reverse order
+  python -m pyls -l -t            # Sort by time
+  python -m pyls -l -t -r         # Sort by time in revrese order
 """
         print(help_text)
 

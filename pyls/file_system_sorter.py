@@ -14,3 +14,8 @@ class ReverseSorter(FileSystemSorter):
     """Sort items in reverse direction"""
     def sort(self, items: List[FileSystemItem]) -> List[FileSystemItem]:
         return reversed(items)
+    
+class TimeSorter(FileSystemSorter):
+    """Sort items by modification time"""
+    def sort(self, items: List[FileSystemItem]) -> List[FileSystemItem]:
+        return sorted(items, key=lambda x: x.time_modified)
