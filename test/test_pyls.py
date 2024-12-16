@@ -6,6 +6,7 @@ import tempfile
 import os
 
 from pyls.file_system_loader import FileSystemLoader
+from pyls.file_system_formatter import NameFormatter
 
 @pytest.fixture
 def sample_filesystem_json() -> Dict[str, Any]:
@@ -161,3 +162,13 @@ def test_filesystem_loader(temp_json_file, sample_filesystem_json):
     assert len(root.contents) == 9
     assert any(item.name == ".gitignore" for item in root.contents)
     assert any(item.name == "lexer" for item in root.contents)
+
+def test_filesystem_formatters(temp_json_file):
+    """Test filesystem formatters"""
+    root = FileSystemLoader.load_from_json(temp_json_file)
+    items = root.contents
+
+    # Test name formatter
+    name_formatter = NameFormatter()
+    names = name_formatter.format(items)
+    assert names == ['.gitignore', 'LICENSE', 'README.md', 'ast', 'go.mod', 'lexer', 'main.go', 'parser', 'token']
