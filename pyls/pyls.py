@@ -10,6 +10,7 @@ from .file_system_processor import FileSystemProcessor
 from .file_system_formatter import NameFormatter, DetailedFormatter
 from .file_system_filter import HiddenItemsFilter, TypeFilter
 from .file_system_sorter import ReverseSorter, TimeSorter
+from .file_system_navigator import FileSystemNavigator
 
 class PyLSCommandLineInterface:
     """Handles command-line argument parsing and application logic"""
@@ -33,6 +34,10 @@ class PyLSCommandLineInterface:
         try:
             # Load filesystem
             root = FileSystemLoader.load_from_json(self.json_path)
+
+            # Navigate to specified path if provided
+            if parsed_args.path:
+                root = FileSystemNavigator.navigate(root, parsed_args.path)
 
             # Prepare items to process
             items = root.contents if hasattr(root, 'contents') else [root]
@@ -88,6 +93,7 @@ class PyLSCommandLineInterface:
         parser.add_argument('-r', dest='reverse', action='store_true', help='Reverse order')
         parser.add_argument('-t', dest='time_sort', action='store_true', help='Sort by time')
         parser.add_argument('--filter', choices=['file', 'dir'], help='Filter by type')
+        parser.add_argument('path', nargs='?', default=None)
         parser.add_argument('--help', action='store_true', help='Show help message')
         return parser
     
@@ -110,7 +116,8 @@ Examples:
   python -m pyls -l -t            # Sort by time
   python -m pyls -l -t -r         # Sort by time in revrese order
   python -m pyls -l --filter=file # Show only files
-  python -m pyls -l --filter=dir # Show only directories
+  python -m pyls -l --filter=dir  # Show only directories
+  python -m pyls -l PATH          # Show all files and directories of PATH if PATH exists
 """
         print(help_text)
 
