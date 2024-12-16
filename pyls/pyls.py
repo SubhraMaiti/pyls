@@ -38,7 +38,7 @@ class PyLSCommandLineInterface:
 
             # Create filters
             filters = [
-                HiddenItemsFilter()
+                HiddenItemsFilter(parsed_args.all_files)
             ]
 
             # Determine formatter
@@ -68,6 +68,7 @@ class PyLSCommandLineInterface:
         :return: Configured ArgumentParser
         """
         parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument('-A', dest='all_files', action='store_true', help='Show all items')
         parser.add_argument('--help', action='store_true', help='Show help message')
         return parser
     
@@ -75,8 +76,12 @@ class PyLSCommandLineInterface:
         """Display help information"""
         help_text = """Usage: python -m pyls [OPTIONS] [PATH]
 
+Options:
+  -A          Show all files, including hidden items
+
 Examples:
   python -m pyls                  # List files in current directory
+  python -m pyls -A               # List all files and folder in current directory including hidden
 """
         print(help_text)
 
