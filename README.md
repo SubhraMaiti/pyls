@@ -6,11 +6,15 @@ pyls is a Python implementation of the Linux `ls` command, capable of listing fi
 
 ## Features
 - List files and directories
+- Show hidden files with `-A`
 
 ## Usage
 ```bash
 # Basic usage
 python -m pyls
+
+# Show all files
+python -m pyls -A
 
 # Show help
 python -m pyls --help

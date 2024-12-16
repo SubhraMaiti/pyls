@@ -77,7 +77,7 @@ class PyLSCommandLineInterface:
         help_text = """Usage: python -m pyls [OPTIONS] [PATH]
 
 Options:
-  -A          Show all files, including hidden items
+  -A          Show all files, folders including hidden items
 
 Examples:
   python -m pyls                  # List files in current directory
