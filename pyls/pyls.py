@@ -7,7 +7,7 @@ from typing import Optional, List
 from .file_system_loader import FileSystemLoader
 from .file_system_error import FileSystemError
 from .file_system_processor import FileSystemProcessor
-from .file_system_formatter import NameFormatter
+from .file_system_formatter import NameFormatter, DetailedFormatter
 from .file_system_filter import HiddenItemsFilter
 
 class PyLSCommandLineInterface:
@@ -42,7 +42,7 @@ class PyLSCommandLineInterface:
             ]
 
             # Determine formatter
-            formatter = NameFormatter()
+            formatter = DetailedFormatter() if parsed_args.long_format else NameFormatter()
 
             # Create and run processor
             # Create and run processor
@@ -55,6 +55,9 @@ class PyLSCommandLineInterface:
             # Print output
             if type(formatter) == NameFormatter:
                 print(" ".join(output))
+            else:
+                for line in output:
+                    print(line)
 
         except (FileSystemError, ValueError) as e:
             print(f"error: {e}")
@@ -69,6 +72,7 @@ class PyLSCommandLineInterface:
         """
         parser = argparse.ArgumentParser(add_help=False)
         parser.add_argument('-A', dest='all_files', action='store_true', help='Show all items')
+        parser.add_argument('-l', dest='long_format', action='store_true', help='Long format')
         parser.add_argument('--help', action='store_true', help='Show help message')
         return parser
     
@@ -78,10 +82,12 @@ class PyLSCommandLineInterface:
 
 Options:
   -A          Show all files, folders including hidden items
+  -l          Use long listing format
 
 Examples:
   python -m pyls                  # List files in current directory
   python -m pyls -A               # List all files and folder in current directory including hidden
+  python -m pyls -l               # Long format listing
 """
         print(help_text)
 
